@@ -37,18 +37,18 @@ const StudentManagement = () => {
   const handleCreate = () => {
     setAction("create");
     onOpenModel();
-  }
+  };
 
   const handleEdit = (studentId: number) => {
     setSelectedStudent(studentId);
     setAction("edit");
     onOpenModel();
-  }
+  };
 
   const handleDelete = (studentId: number) => {
     setSelectedStudent(studentId);
     onOpenConfirm();
-  }
+  };
 
   // const { data, isLoading, error } = useStudents();
 
@@ -63,11 +63,11 @@ const StudentManagement = () => {
       firstName: `ABC ${idx}`,
       lastName: `AX ${idx}`,
       email: `AX ${idx}`,
-      dateOfBirth: '',
+      dateOfBirth: "",
       birthPlace: `birthPlace ${idx}`,
       finalScore: idx * 2,
-    }))
-  }
+    }));
+  };
 
   return (
     <Stack marginLeft={10} marginRight={10}>
@@ -106,7 +106,9 @@ const StudentManagement = () => {
                         colorScheme="teal"
                         variant="outline"
                         size={"sm"}
-                        onClick={() => { handleEdit(student.id) }}
+                        onClick={() => {
+                          handleEdit(student.id);
+                        }}
                       >
                         Edit
                       </Button>
@@ -115,7 +117,9 @@ const StudentManagement = () => {
                         colorScheme="red"
                         variant="outline"
                         size={"sm"}
-                        onClick={() => { handleDelete(student.id) }}
+                        onClick={() => {
+                          handleDelete(student.id);
+                        }}
                       >
                         Delete
                       </Button>
@@ -147,10 +151,16 @@ const StudentManagement = () => {
           </Table>
         </TableContainer>
       </Container>
-      <ModalBox isOpenModal={isOpenModel} onCloseModal={onCloseModel} selectedStudent = {selectedStudent} action={action} />
+      <ModalBox
+        isOpenModal={isOpenModel}
+        onCloseModal={onCloseModel}
+        selectedStudent={selectedStudent}
+        action={action}
+      />
       <ConfirmBox
         isOpenConfirm={isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
+        selectedStudent={selectedStudent}
       />
     </Stack>
   );
