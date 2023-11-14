@@ -17,9 +17,12 @@ import {
 } from "@chakra-ui/react";
 import ConfirmBox from "./ConfirmBox";
 import ModalBox from "./ModalBox";
+import { useState } from "react";
 // import useStudents from "../hooks/useStudent";
 
 const StudentManagement = () => {
+  const [selectedStudent, setSelectedStudent] = useState<number>(0);
+  const [action, setAction] = useState("");
   const {
     isOpen: isOpenModel,
     onOpen: onOpenModel,
@@ -31,11 +34,40 @@ const StudentManagement = () => {
     onClose: onCloseConfirm,
   } = useDisclosure();
 
+  const handleCreate = () => {
+    setAction("create");
+    onOpenModel();
+  }
+
+  const handleEdit = (studentId: number) => {
+    setSelectedStudent(studentId);
+    setAction("edit");
+    onOpenModel();
+  }
+
+  const handleDelete = (studentId: number) => {
+    setSelectedStudent(studentId);
+    onOpenConfirm();
+  }
+
   // const { data, isLoading, error } = useStudents();
 
   // if (error || !data) return null;
 
   // if (isLoading) return <Spinner />;
+
+  const data = () => {
+    return Array.from(Array(10)).map((_, idx) => ({
+      id: idx,
+      studentNumber: idx + 1,
+      firstName: `ABC ${idx}`,
+      lastName: `AX ${idx}`,
+      email: `AX ${idx}`,
+      dateOfBirth: '',
+      birthPlace: `birthPlace ${idx}`,
+      finalScore: idx * 2,
+    }))
+  }
 
   return (
     <Stack marginLeft={10} marginRight={10}>
@@ -58,44 +90,13 @@ const StudentManagement = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>First name</Td>
-                <Td>millimetres (mm)</Td>
-                <Td>First name</Td>
-                <Td>millimetres (mm)</Td>
-                <Td>First name</Td>
-                <Td>millimetres (mm)</Td>
-                <Td>First name</Td>
-                <Td>
-                  <Stack direction="row" spacing={4}>
-                    <Button
-                      leftIcon={<EditIcon />}
-                      colorScheme="teal"
-                      variant="outline"
-                      size={"sm"}
-                      onClick={onOpenModel}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      rightIcon={<DeleteIcon />}
-                      colorScheme="red"
-                      variant="outline"
-                      size={"sm"}
-                      onClick={onOpenConfirm}
-                    >
-                      Delete
-                    </Button>
-                  </Stack>
-                </Td>
-              </Tr>
-              {/* {data.map((student) => (
+              {data().map((student) => (
                 <Tr key={student.id}>
                   <Td>{student.studentNumber}</Td>
                   <Td>{student.firstName}</Td>
                   <Td>{student.lastName}</Td>
                   <Td>{student.email}</Td>
-                  <Td>{student.dateOfBirth.toUTCString()}</Td>
+                  <Td>{student.dateOfBirth}</Td>
                   <Td>{student.birthPlace}</Td>
                   <Td>{student.finalScore}</Td>
                   <Td>
@@ -105,7 +106,7 @@ const StudentManagement = () => {
                         colorScheme="teal"
                         variant="outline"
                         size={"sm"}
-                        onClick={onOpenModel}
+                        onClick={() => { handleEdit(student.id) }}
                       >
                         Edit
                       </Button>
@@ -114,14 +115,14 @@ const StudentManagement = () => {
                         colorScheme="red"
                         variant="outline"
                         size={"sm"}
-                        onClick={onOpenConfirm}
+                        onClick={() => { handleDelete(student.id) }}
                       >
                         Delete
                       </Button>
                     </Stack>
                   </Td>
                 </Tr>
-              ))} */}
+              ))}
             </Tbody>
             <Tfoot>
               <Tr>
@@ -136,7 +137,7 @@ const StudentManagement = () => {
                   <Button
                     leftIcon={<EditIcon />}
                     colorScheme="blue"
-                    onClick={onOpenModel}
+                    onClick={handleCreate}
                   >
                     Create Student
                   </Button>
@@ -146,7 +147,7 @@ const StudentManagement = () => {
           </Table>
         </TableContainer>
       </Container>
-      <ModalBox isOpenModal={isOpenModel} onCloseModal={onCloseModel} />
+      <ModalBox isOpenModal={isOpenModel} onCloseModal={onCloseModel} selectedStudent = {selectedStudent} action={action} />
       <ConfirmBox
         isOpenConfirm={isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
