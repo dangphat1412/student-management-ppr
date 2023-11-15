@@ -1,8 +1,12 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Button,
   Container,
-  // Spinner,
+  Spinner,
   Stack,
   Table,
   TableCaption,
@@ -17,12 +21,15 @@ import {
 } from "@chakra-ui/react";
 import ConfirmBox from "./ConfirmBox";
 import ModalBox from "./ModalBox";
-import { useState } from "react";
-// import useStudents from "../hooks/useStudent";
+import { useEffect, useState } from "react";
+import { Student, studentService } from "../services/student-service";
 
 const StudentManagement = () => {
-  const [selectedStudent, setSelectedStudent] = useState<number>(0);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<Student>();
   const [action, setAction] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const {
     isOpen: isOpenModel,
     onOpen: onOpenModel,
@@ -39,38 +46,48 @@ const StudentManagement = () => {
     onOpenModel();
   };
 
-  const handleEdit = (studentId: number) => {
-    setSelectedStudent(studentId);
+  const handleEdit = (student: Student) => {
+    setSelectedStudent(student);
     setAction("edit");
     onOpenModel();
   };
 
-  const handleDelete = (studentId: number) => {
-    setSelectedStudent(studentId);
+  const handleDelete = (student: Student) => {
+    setSelectedStudent(student);
     onOpenConfirm();
   };
 
-  // const { data, isLoading, error } = useStudents();
+  const getAllStudents = async () => {
+    try {
+      setLoading(true);
+      const response = await studentService.getAllStudents();
+      setStudents(response.data);
+      console.log(response);
 
-  // if (error || !data) return null;
-
-  // if (isLoading) return <Spinner />;
-
-  const data = () => {
-    return Array.from(Array(10)).map((_, idx) => ({
-      id: idx,
-      studentNumber: idx + 1,
-      firstName: `ABC ${idx}`,
-      lastName: `AX ${idx}`,
-      email: `AX ${idx}`,
-      dateOfBirth: "",
-      birthPlace: `birthPlace ${idx}`,
-      finalScore: idx * 2,
-    }));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setError(error.message);
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    getAllStudents();
+  }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <Stack marginLeft={10} marginRight={10}>
+      {error && (
+        <Alert status="error">
+          <AlertIcon />
+          <AlertTitle>Error!</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
       <Container maxW="2sm">
         <TableContainer>
           <Table variant="striped">
@@ -90,15 +107,15 @@ const StudentManagement = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {data().map((student) => (
+              {students.map((student) => (
                 <Tr key={student.id}>
-                  <Td>{student.studentNumber}</Td>
-                  <Td>{student.firstName}</Td>
-                  <Td>{student.lastName}</Td>
+                  <Td>{student.studentcode}</Td>
+                  <Td>{student.firstname}</Td>
+                  <Td>{student.lastname}</Td>
                   <Td>{student.email}</Td>
-                  <Td>{student.dateOfBirth}</Td>
-                  <Td>{student.birthPlace}</Td>
-                  <Td>{student.finalScore}</Td>
+                  <Td>{student.dob}</Td>
+                  <Td>{student.country}</Td>
+                  <Td>{student.score}</Td>
                   <Td>
                     <Stack direction="row" spacing={4}>
                       <Button
@@ -107,7 +124,7 @@ const StudentManagement = () => {
                         variant="outline"
                         size={"sm"}
                         onClick={() => {
-                          handleEdit(student.id);
+                          handleEdit(student);
                         }}
                       >
                         Edit
@@ -118,7 +135,7 @@ const StudentManagement = () => {
                         variant="outline"
                         size={"sm"}
                         onClick={() => {
-                          handleDelete(student.id);
+                          handleDelete(student);
                         }}
                       >
                         Delete
@@ -154,13 +171,14 @@ const StudentManagement = () => {
       <ModalBox
         isOpenModal={isOpenModel}
         onCloseModal={onCloseModel}
-        selectedStudent={selectedStudent}
+        selectedStudent={selectedStudent!}
+        setSelectedStudent={setSelectedStudent}
         action={action}
       />
       <ConfirmBox
         isOpenConfirm={isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
-        selectedStudent={selectedStudent}
+        selectedStudent={selectedStudent!}
       />
     </Stack>
   );

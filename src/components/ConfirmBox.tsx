@@ -8,10 +8,10 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
-import { studentService } from "../services/student-service";
+import { Student, studentService } from "../services/student-service";
 
 interface Props {
-  selectedStudent: number;
+  selectedStudent: Student;
   isOpenConfirm: boolean;
   onCloseConfirm: () => void;
 }
@@ -28,8 +28,9 @@ const ConfirmBox = ({
     try {
       setLoading(true);
       await studentService.deleteStudent(studentId);
-    } catch (error) {
-      setErrorMessage(error.data.message)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setErrorMessage(error.message)
     } finally {
       setLoading(true);
       onCloseConfirm();
@@ -56,7 +57,7 @@ const ConfirmBox = ({
             </Button>
             <Button
               colorScheme="red"
-              onClick={() => handleDelete(selectedStudent)}
+              onClick={() => handleDelete(selectedStudent.id)}
               ml={3}
             >
               Delete

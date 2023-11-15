@@ -11,27 +11,29 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useRef } from "react";
+import { SetStateAction, useRef } from "react";
+import { Student } from "../services/student-service";
+import { formatDate } from "../utils/formatDate";
 
 interface Props {
-  action: string,
-  selectedStudent: number,
+  action: string;
+  selectedStudent: Student;
+  setSelectedStudent: React.Dispatch<SetStateAction<Student | undefined>>
+
   isOpenModal: boolean;
   onCloseModal: () => void;
 }
 
-const ModalBox = ({ isOpenModal, onCloseModal, action, selectedStudent }: Props) => {
+const ModalBox = ({
+  isOpenModal,
+  onCloseModal,
+  action,
+  selectedStudent,
+  setSelectedStudent
+}: Props) => {
+  console.log(selectedStudent);
   const initialRef = useRef(null);
   const finalRef = useRef(null);
-  const student = {
-    studentNumber: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    dateOfBirth: '',
-    birthPlace: '',
-    finalScore: '',
-  };
   return (
     <Modal
       initialFocusRef={initialRef}
@@ -41,42 +43,86 @@ const ModalBox = ({ isOpenModal, onCloseModal, action, selectedStudent }: Props)
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{action == 'create' ? "Create new student" : "Edit student"}</ModalHeader>
+        <ModalHeader>
+          {action == "create" ? "Create new student" : "Edit student"}
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <FormControl>
             <FormLabel>Student number</FormLabel>
-            <Input ref={initialRef} placeholder="Student number" value={student.studentNumber} />
+            <Input
+              ref={initialRef}
+              placeholder="Student number"
+              value={selectedStudent?.studentcode}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, studentcode: e.target.value })
+              }
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>First name</FormLabel>
-            <Input placeholder="First name" value={student.firstName} />
+            <Input
+              placeholder="First name"
+              value={selectedStudent?.firstname}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, firstname: e.target.value })
+              }
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Last name</FormLabel>
-            <Input placeholder="Last name" value={student.lastName} />
+            <Input
+              placeholder="Last name"
+              value={selectedStudent?.lastname}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, lastname: e.target.value })
+              }
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Email</FormLabel>
-            <Input placeholder="Email" value={student.email} />
+            <Input
+              placeholder="Email"
+              value={selectedStudent?.email}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, email: e.target.value })
+              }
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Date of birth</FormLabel>
-            <Input type="date" placeholder="Date of birth" value={student.dateOfBirth} />
+            <Input
+              type="date"
+              placeholder="Date of birth"
+              value={selectedStudent?.dob}
+              onChange={(e) => setSelectedStudent({ ...selectedStudent, dob: e.target.value })}
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Birthplace</FormLabel>
-            <Input placeholder="Birthplace" value={student.birthPlace} />
+            <Input
+              placeholder="Birthplace"
+              value={selectedStudent?.country}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, country: e.target.value })
+              }
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Final score</FormLabel>
-            <Input placeholder="Final score" value={student.finalScore} />
+            <Input
+              placeholder="Final score"
+              value={selectedStudent?.score}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, score: e.target.value })
+              }
+            />
           </FormControl>
         </ModalBody>
 
