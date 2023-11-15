@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   FormControl,
   FormLabel,
@@ -11,15 +13,15 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { SetStateAction, useRef } from "react";
-import { Student } from "../services/student-service";
-import { formatDate } from "../utils/formatDate";
+import { SetStateAction, useRef, useState } from "react";
+import { Student, studentService } from "../services/student-service";
 
 interface Props {
   action: string;
   selectedStudent: Student;
-  setSelectedStudent: React.Dispatch<SetStateAction<Student | undefined>>
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toast: any;
+  setSelectedStudent: React.Dispatch<SetStateAction<Student | undefined>>;
   isOpenModal: boolean;
   onCloseModal: () => void;
 }
@@ -27,13 +29,40 @@ interface Props {
 const ModalBox = ({
   isOpenModal,
   onCloseModal,
+  toast,
   action,
   selectedStudent,
-  setSelectedStudent
+  setSelectedStudent,
 }: Props) => {
   console.log(selectedStudent);
   const initialRef = useRef(null);
   const finalRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const response =
+        action == "edit"
+          ? await studentService.updateStudent(selectedStudent)
+          : await studentService.addStudent(selectedStudent);
+      if (response.status == 200) {
+        toast({
+          description: response.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        onCloseModal();
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Modal
       initialFocusRef={initialRef}
@@ -55,7 +84,10 @@ const ModalBox = ({
               placeholder="Student number"
               value={selectedStudent?.studentcode}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, studentcode: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  studentcode: e.target.value,
+                })
               }
             />
           </FormControl>
@@ -66,7 +98,10 @@ const ModalBox = ({
               placeholder="First name"
               value={selectedStudent?.firstname}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, firstname: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  firstname: e.target.value,
+                })
               }
             />
           </FormControl>
@@ -77,7 +112,10 @@ const ModalBox = ({
               placeholder="Last name"
               value={selectedStudent?.lastname}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, lastname: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  lastname: e.target.value,
+                })
               }
             />
           </FormControl>
@@ -88,7 +126,10 @@ const ModalBox = ({
               placeholder="Email"
               value={selectedStudent?.email}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, email: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  email: e.target.value,
+                })
               }
             />
           </FormControl>
@@ -99,7 +140,9 @@ const ModalBox = ({
               type="date"
               placeholder="Date of birth"
               value={selectedStudent?.dob}
-              onChange={(e) => setSelectedStudent({ ...selectedStudent, dob: e.target.value })}
+              onChange={(e) =>
+                setSelectedStudent({ ...selectedStudent, dob: e.target.value })
+              }
             />
           </FormControl>
 
@@ -109,7 +152,10 @@ const ModalBox = ({
               placeholder="Birthplace"
               value={selectedStudent?.country}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, country: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  country: e.target.value,
+                })
               }
             />
           </FormControl>
@@ -120,17 +166,26 @@ const ModalBox = ({
               placeholder="Final score"
               value={selectedStudent?.score}
               onChange={(e) =>
-                setSelectedStudent({ ...selectedStudent, score: e.target.value })
+                setSelectedStudent({
+                  ...selectedStudent,
+                  score: e.target.value,
+                })
               }
             />
           </FormControl>
+          {error && (
+            <Alert status="error">
+              <AlertIcon />
+              {error}
+            </Alert>
+          )}
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3}>
+          <Button isLoading={loading} colorScheme="blue" mr={3}>
             {action == "create" ? "Save" : "Update"}
           </Button>
-          <Button onClick={onCloseModal}>Cancel</Button>
+          <Button onClick={handleSubmit}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

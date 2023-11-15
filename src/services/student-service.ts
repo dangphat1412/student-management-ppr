@@ -27,8 +27,8 @@ class StudentService {
     return respone;
   }
 
-  async updateStudent(studentId: number, student: Student) {
-    const respone = await axios.put(`/students/update/${studentId}`, {
+  async updateStudent(student: Student) {
+    const respone = await axios.put(`/students/update/${student.id}`, {
       student,
     });
     return respone;

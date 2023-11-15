@@ -13,26 +13,41 @@ import { Student, studentService } from "../services/student-service";
 interface Props {
   selectedStudent: Student;
   isOpenConfirm: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  toast: any;
   onCloseConfirm: () => void;
 }
 
 const ConfirmBox = ({
   isOpenConfirm,
   onCloseConfirm,
+  toast,
   selectedStudent,
 }: Props) => {
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const cancelRef = useRef(null);
   const handleDelete = async (studentId: number) => {
     try {
       setLoading(true);
-      await studentService.deleteStudent(studentId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await studentService.deleteStudent(studentId);
+      if (response.status == 204) {
+        toast({
+          description: response.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setErrorMessage(error.message)
+      toast({
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
-      setLoading(true);
+      setLoading(false);
       onCloseConfirm();
     }
   };
@@ -56,6 +71,7 @@ const ConfirmBox = ({
               Cancel
             </Button>
             <Button
+              isLoading={loading}
               colorScheme="red"
               onClick={() => handleDelete(selectedStudent.id)}
               ml={3}

@@ -18,6 +18,7 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import ConfirmBox from "./ConfirmBox";
 import ModalBox from "./ModalBox";
@@ -40,6 +41,7 @@ const StudentManagement = () => {
     onOpen: onOpenConfirm,
     onClose: onCloseConfirm,
   } = useDisclosure();
+  const toast = useToast()
 
   const handleCreate = () => {
     setAction("create");
@@ -171,6 +173,7 @@ const StudentManagement = () => {
       <ModalBox
         isOpenModal={isOpenModel}
         onCloseModal={onCloseModel}
+        toast={toast}
         selectedStudent={selectedStudent!}
         setSelectedStudent={setSelectedStudent}
         action={action}
@@ -178,6 +181,7 @@ const StudentManagement = () => {
       <ConfirmBox
         isOpenConfirm={isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
+        toast={toast}
         selectedStudent={selectedStudent!}
       />
     </Stack>
