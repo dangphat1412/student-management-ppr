@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
 import {
   Alert,
   AlertDescription,
@@ -134,6 +134,17 @@ const StudentManagement = () => {
                   <Td>
                     <Stack direction="row" spacing={4}>
                       <Button
+                        leftIcon={<SearchIcon />}
+                        colorScheme="blue"
+                        variant="outline"
+                        size={"sm"}
+                        onClick={() => {
+                          handleEdit(student);
+                        }}
+                      >
+                        View
+                      </Button>
+                      <Button
                         leftIcon={<EditIcon />}
                         colorScheme="teal"
                         variant="outline"
@@ -145,7 +156,7 @@ const StudentManagement = () => {
                         Edit
                       </Button>
                       <Button
-                        rightIcon={<DeleteIcon />}
+                        leftIcon={<DeleteIcon />}
                         colorScheme="red"
                         variant="outline"
                         size={"sm"}
