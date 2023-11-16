@@ -75,7 +75,7 @@ def get_student_by_id(id):
         
 # can sua
 # {status, error}
-@app.route('/api/students/add', methods=['GET', 'POST'])
+@app.route('/api/students/add', methods=['GET'])
 def add_student():
     try:
         conn = get_db_connection()
@@ -111,7 +111,7 @@ def add_student():
 
 # can sua
 # {status, error}
-@app.route('/api/students/update/<int:id>', methods=['PUT'])
+@app.route('/api/students/update/<id>', methods=['PUT'])
 def update_student(id):
     try:
         conn = get_db_connection()
