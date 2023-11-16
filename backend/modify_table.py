@@ -56,17 +56,17 @@ def modify_info(cursor, conn, student_code,firstname,lastname,email,dob,country,
 # return True: delete successfully
 # return False: don't have info to delete
 # return None: error
-def delete_info(cursor, conn, student_code):
+def delete_info(cursor, conn, id):
     try:
         # check student code
-        student = select_student_by_id(cursor, conn, student_code)  
+        student = select_student_by_id(cursor, conn, id)  
         
         if student is None:
             return False
         else:
             delete_query = "DELETE FROM student\
-                            WHERE student_code=?;"
-            cursor.execute(delete_query, (student_code,))
+                            WHERE id=?;"
+            cursor.execute(delete_query, (id,))
             conn.commit()
 
             cursor.close()

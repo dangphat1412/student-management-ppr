@@ -16,7 +16,7 @@ def get_db_connection():
     except sqlite3.Error as error:
         print('Error occurred - ', error)
 
-
+# done
 @app.route('/api/students', methods=['GET'])
 def list_all_students():
     try:
@@ -42,22 +42,11 @@ def list_all_students():
             list_all.append(dict_student)
         
         return jsonify(list_all), 200
-
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-
-        response = {
-            'data': [],
-            'message': str(error)
-        }
-        return jsonify(response), 500
-    
-    except:
-        raise APIException('Invalid data provided', 400)
         
+    except:
+        raise APIException('Erorr when list all', 400)
 
-# can sua
-# {student, status, error}    
+# done          
 @app.route('/api/students/<id>', methods=['GET'])
 def get_student_by_id(id):
     try:
@@ -80,17 +69,8 @@ def get_student_by_id(id):
         else:
             return jsonify({}), 200
         
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-
-        response = {
-            'data': [],
-            'message': str(error)
-        }
-        return jsonify(response), 500
-    
     except:
-        raise APIException('Invalid data provided', 400)
+        raise APIException('Error when select student', 400)
         
 # can sua
 # {status, error}
@@ -164,22 +144,19 @@ def update_student(student_code):
         print('Error occurred - ', error)
         return json.dumps(error)
 
-# can sua
-# {status, error}
-@app.route('/deleteStudent/<student_code>', methods=['DELETE'])
-def delete_student(student_code):
+# done
+@app.route('/api/students/delete/<id>', methods=['DELETE'])
+def delete_student(id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        delete_info(cursor, conn, student_code)
+        delete_info(cursor, conn, id)
         
-        return json.dumps("Delete sucessfully")
+        return json.dumps("Delete sucessfully"), 204
 
-
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-        return json.dumps(error)
+    except:
+        raise APIException('Error when delete', 400)
 
 @app.errorhandler(APIException)
 def handle_api_exception(e):
