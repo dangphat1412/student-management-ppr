@@ -26,8 +26,18 @@ import { useEffect, useState } from "react";
 import { Student, studentService } from "../services/student-service";
 
 const StudentManagement = () => {
+  const newStudent: Student = {
+    id: 0,
+    studentcode: "",
+    firstname: "",
+    lastname: "",
+    email: "",
+    dob: "",
+    country: "",
+    score: "",
+  }
   const [students, setStudents] = useState<Student[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<Student>();
+  const [selectedStudent, setSelectedStudent] = useState<Student>(newStudent);
   const [action, setAction] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,7 +53,10 @@ const StudentManagement = () => {
   } = useDisclosure();
   const toast = useToast()
 
+
+
   const handleCreate = () => {
+    setSelectedStudent(newStudent)
     setAction("create");
     onOpenModel();
   };
@@ -171,15 +184,14 @@ const StudentManagement = () => {
         </TableContainer>
       </Container>
       <ModalBox
-        isOpenModal={isOpenModel}
+        isOpenModal={!!isOpenModel}
         onCloseModal={onCloseModel}
         toast={toast}
         selectedStudent={selectedStudent!}
-        setSelectedStudent={setSelectedStudent}
         action={action}
       />
       <ConfirmBox
-        isOpenConfirm={isOpenConfirm}
+        isOpenConfirm={!!isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
         toast={toast}
         selectedStudent={selectedStudent!}
