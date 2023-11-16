@@ -2,7 +2,7 @@ from typing import Any
 
 class config:
     # DATABASE
-    DATABASE_NAME = 'project.db'
+    DATABASE_NAME = '/Users/lengoclong/Downloads/FinalProject/student-management-ppr/project.db'
     # LOG
     LOG_PATH = 'app.log'
 
@@ -80,3 +80,47 @@ class Student:
     @score.setter
     def score(self, score):
         self.score = score
+
+class ApiStatus(Student):
+    def __init__(self, id, studentcode, firstname, lastname, email, dob, country, score, apistatuscode, apierror):
+        super().__init__(id, studentcode, firstname, lastname, email, dob, country, score)
+
+        self.apistatuscode = apistatuscode
+        self.apierror = apierror
+
+    @property
+    def apistatuscode(self) -> int:
+        return int(self.apistatuscode)
+    
+    @apistatuscode.setter
+    def apistatuscode(self, apistatuscode):
+        self.apistatuscode = int(apistatuscode)
+
+    @property
+    def apierror(self) -> str:
+        return self.apierror
+    
+    @apierror.setter
+    def apierror(self, apierror):
+        self.apierror = apierror
+
+class APIException(Exception):
+    def __init__(self, message, status_code):
+        self.message = message
+        self.status_code = status_code
+
+    # @property
+    # def message(self) -> str:
+    #     return self.message
+    
+    # @message.setter
+    # def message(self, message):
+    #     self.message = message
+
+    # @property
+    # def status_code(self) ->str:
+    #     return int(self.status_code)
+    
+    # @status_code.setter
+    # def status_code(self, status_code):
+    #     self.status_code = int(status_code)

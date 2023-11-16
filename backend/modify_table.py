@@ -94,11 +94,11 @@ def select_all(cursor, conn):
         print('Error occurred - ', error)
         return None    
 
-def select_student_by_id(cursor, conn, student_code):
+def select_student_by_id(cursor, conn, id):
     try:
         select_query = "SELECT * FROM student\
-                        WHERE studentcode=?;"
-        cursor.execute(select_query, (student_code,))
+                        WHERE id=?;"
+        cursor.execute(select_query, (id,))
         conn.commit()
 
         # fetch the first row from the result set as a tuple

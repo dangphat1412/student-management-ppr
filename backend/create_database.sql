@@ -1,15 +1,14 @@
 DROP TABLE IF EXISTS student;
 
 CREATE TABLE IF NOT EXISTS student (
-    id INTEGER AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     studentcode VARCHAR(255) NOT NULL UNIQUE,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     email VARCHAR(255),
     dob DATE,
     country VARCHAR(255),
-    score FLOAT NOT NULL,
-    PRIMARY KEY (id)
+    score FLOAT NOT NULL
 );
 
 INSERT INTO student (studentcode,firstname,lastname,email,dob,country,score)   
