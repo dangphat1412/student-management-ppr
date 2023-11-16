@@ -2,8 +2,9 @@ import json
 import sqlite3
 from config import config, Student, APIException
 from flask import Flask, jsonify, request
-from modify_table import select_all, delete_info, insert_info, modify_info, select_student_by_id
+from modify_table import select_all, delete_info, insert_info, modify_info, select_student_by_id, check_student_code
 from flask_cors import CORS
+from input_validation import check_email, check_null, check_score
 
 app = Flask(__name__)
 CORS(app)
@@ -110,33 +111,58 @@ def add_student():
 
 # can sua
 # {status, error}
-@app.route('/api/students/update/<student_code>', methods=['PUT'])
-def update_student(student_code):
+@app.route('/api/students/update/<int:id>', methods=['PUT'])
+def update_student(id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # get data from request form
-        new_student = Student
-        {
-            "Student Code": Student.set_studentcode(student_code),
-            "First Name": Student.set_firstname(request.form["firstname"]),
-            "Last Name": Student.set_lastname(request.form["lastname"]),
-            "Email": Student.set_email(request.form["email"]),
-            "DOB": Student.set_dob(request.form["dob"]),
-            "Country": Student.set_country(request.form["country"]),
-            "Score": Student.set_score(request.form["score"])
-        }
+        message = ""
+        # get data
+        data = request.get_json()
+
+        # check student code is null or invalid or exists
+        if (check_null(data['studentcode']) is True) \
+            or (check_student_code(cursor, conn, data['studentcode']) == True):
+            message = "Student Code is not valid"
         
-        modify_info(cursor, conn, 
-                    Student.studentcode(), 
-                    Student.firstname(),
-                    Student.lastname(),
-                    Student.email(),
-                    Student.dob(),
-                    Student.country(),
-                    Student.score()
-                    )
+        # check first name
+        elif check_null(data['firstname']) is True:
+            message = "First name is not valid"
+
+        # check last name
+        elif check_null(data['lastname']) is True:
+            message = "Last name is not valid"
+
+        # check email
+        elif (check_null(data['email']) is True) or (check_email(data['email']) is False):
+            message = "Email is not valid"
+
+        # check country
+        elif check_null(data['country']) is True:
+            message = "Country is not valid"
+
+
+        # new_student = Student
+        # {
+        #     "Student Code": Student.set_studentcode(student_code),
+        #     "First Name": Student.set_firstname(request.form["firstname"]),
+        #     "Last Name": Student.set_lastname(request.form["lastname"]),
+        #     "Email": Student.set_email(request.form["email"]),
+        #     "DOB": Student.set_dob(request.form["dob"]),
+        #     "Country": Student.set_country(request.form["country"]),
+        #     "Score": Student.set_score(request.form["score"])
+        # }
+        
+        # modify_info(cursor, conn, 
+        #             Student.studentcode(), 
+        #             Student.firstname(),
+        #             Student.lastname(),
+        #             Student.email(),
+        #             Student.dob(),
+        #             Student.country(),
+        #             Student.score()
+        #             )
         
         return json.dumps("Update sucessfully")
 

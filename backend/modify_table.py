@@ -104,14 +104,32 @@ def select_student_by_id(cursor, conn, id):
         # fetch the first row from the result set as a tuple
         result = cursor.fetchone()
 
-        cursor.close()
-        conn.close()
+        # cursor.close()
+        # conn.close()
 
         return result
     except sqlite3.Error as error:
         print('Error occurred - ', error)
         return None 
 
+# return True: student_code exists
+# return False: student_code doesn't exists
+def check_student_code(cursor, conn, student_code):
+    try:
+        select_query = "SELECT * FROM student\
+                        WHERE student_code=?;"
+        cursor.execute(select_query, (student_code,))
+        conn.commit()
+        result = cursor.fetchone()
+
+        if result is not None:
+            return True
+        else:
+            return False
+
+    except sqlite3.Error as error:
+        print('Error occurred - ', error)
+        return None
 
 #insert_info("MSE4","Le","Ngoc Long","longlengoc@gmail.com","05/05/1999","Hanoi","8.5")
 #modify_info("MSE4","Le Ngoc","Long","longlengoc@gmail.com","05/05/1999","Hanoi",8.7)
