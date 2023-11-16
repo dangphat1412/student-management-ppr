@@ -20,10 +20,11 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import ConfirmBox from "./ConfirmBox";
-import ModalBox from "./ModalBox";
 import { useEffect, useState } from "react";
 import { Student, studentService } from "../services/student-service";
+import ConfirmDelete from "./ConfirmDelete";
+import StudentForm from "./StudentForm";
+import StudentInfo from "./StudentInfo";
 
 const StudentManagement = () => {
   const newStudent: Student = {
@@ -35,10 +36,11 @@ const StudentManagement = () => {
     dob: "",
     country: "",
     score: "",
-  }
+  };
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student>(newStudent);
   const [action, setAction] = useState("");
+  const [isActionCompleted, setIsActionCompleted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const {
@@ -47,16 +49,19 @@ const StudentManagement = () => {
     onClose: onCloseModel,
   } = useDisclosure();
   const {
+    isOpen: isOpenInfo,
+    onOpen: onOpenInfo,
+    onClose: onCloseInfo,
+  } = useDisclosure();
+  const {
     isOpen: isOpenConfirm,
     onOpen: onOpenConfirm,
     onClose: onCloseConfirm,
   } = useDisclosure();
-  const toast = useToast()
-
-
+  const toast = useToast();
 
   const handleCreate = () => {
-    setSelectedStudent(newStudent)
+    setSelectedStudent(newStudent);
     setAction("create");
     onOpenModel();
   };
@@ -65,6 +70,11 @@ const StudentManagement = () => {
     setSelectedStudent(student);
     setAction("edit");
     onOpenModel();
+  };
+
+  const handleView = (student: Student) => {
+    setSelectedStudent(student);
+    onOpenInfo();
   };
 
   const handleDelete = (student: Student) => {
@@ -77,12 +87,10 @@ const StudentManagement = () => {
       setLoading(true);
       const response = await studentService.getAllStudents();
       setStudents(response.data);
-      console.log(response);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setError(error.message);
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -90,7 +98,8 @@ const StudentManagement = () => {
 
   useEffect(() => {
     getAllStudents();
-  }, []);
+    setIsActionCompleted(false);
+  }, [isActionCompleted]);
 
   if (loading) return <Spinner />;
 
@@ -139,7 +148,7 @@ const StudentManagement = () => {
                         variant="outline"
                         size={"sm"}
                         onClick={() => {
-                          handleEdit(student);
+                          handleView(student);
                         }}
                       >
                         View
@@ -194,18 +203,25 @@ const StudentManagement = () => {
           </Table>
         </TableContainer>
       </Container>
-      <ModalBox
-        isOpenModal={!!isOpenModel}
+      <StudentInfo
+        isOpenModal={isOpenInfo}
+        onCloseModal={onCloseInfo}
+        selectedStudent={selectedStudent}
+      />
+      <StudentForm
+        isOpenModal={isOpenModel}
         onCloseModal={onCloseModel}
         toast={toast}
-        selectedStudent={selectedStudent!}
+        selectedStudent={selectedStudent}
         action={action}
+        setIsActionCompleted = {setIsActionCompleted}
       />
-      <ConfirmBox
-        isOpenConfirm={!!isOpenConfirm}
+      <ConfirmDelete
+        isOpenConfirm={isOpenConfirm}
         onCloseConfirm={onCloseConfirm}
         toast={toast}
-        selectedStudent={selectedStudent!}
+        selectedStudent={selectedStudent}
+        setIsActionCompleted = {setIsActionCompleted}
       />
     </Stack>
   );

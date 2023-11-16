@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Student, studentService } from "../services/student-service";
 
 interface Props {
@@ -23,14 +23,16 @@ interface Props {
   toast: any;
   isOpenModal: boolean;
   onCloseModal: () => void;
+  setIsActionCompleted: Dispatch<SetStateAction<boolean>>;
 }
 
-const ModalBox = ({
+const StudentForm = ({
   isOpenModal,
   onCloseModal,
   toast,
   action,
   selectedStudent,
+  setIsActionCompleted,
 }: Props) => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
@@ -40,9 +42,8 @@ const ModalBox = ({
 
   useEffect(() => {
     setStudent(selectedStudent);
-  }, [selectedStudent])
-
-  console.log(student);
+    setError(null);
+  }, [selectedStudent]);
 
   const handleSubmit = async () => {
     try {
@@ -53,11 +54,12 @@ const ModalBox = ({
           : await studentService.addStudent(student);
       if (response.status == 200) {
         toast({
-          description: response.data.message,
+          description: response.data,
           status: "success",
           duration: 5000,
           isClosable: true,
         });
+        setIsActionCompleted(true);
         onCloseModal();
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,10 +145,10 @@ const ModalBox = ({
             <Input
               type="date"
               placeholder="Date of birth"
-            // value={student?.dob}
-            // onChange={(e) =>
-            //   setStudent({ ...selectedStudent, dob: e.target.value })
-            // }
+              // value={student?.dob}
+              // onChange={(e) =>
+              //   setStudent({ ...selectedStudent, dob: e.target.value })
+              // }
             />
           </FormControl>
 
@@ -186,7 +188,12 @@ const ModalBox = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button isLoading={loading} colorScheme="blue" mr={3} onClick={handleSubmit}>
+          <Button
+            isLoading={loading}
+            colorScheme="blue"
+            mr={3}
+            onClick={handleSubmit}
+          >
             {action == "create" ? "Save" : "Update"}
           </Button>
           <Button onClick={onCloseModal}>Cancel</Button>
@@ -196,4 +203,4 @@ const ModalBox = ({
   );
 };
 
-export default ModalBox;
+export default StudentForm;

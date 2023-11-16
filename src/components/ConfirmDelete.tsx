@@ -7,7 +7,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Student, studentService } from "../services/student-service";
 
 interface Props {
@@ -16,13 +16,15 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toast: any;
   onCloseConfirm: () => void;
+  setIsActionCompleted: Dispatch<SetStateAction<boolean>>;
 }
 
-const ConfirmBox = ({
+const ConfirmDelete = ({
   isOpenConfirm,
   onCloseConfirm,
   toast,
   selectedStudent,
+  setIsActionCompleted,
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const cancelRef = useRef(null);
@@ -30,6 +32,8 @@ const ConfirmBox = ({
     try {
       setLoading(true);
       const response = await studentService.deleteStudent(studentId);
+      console.log(response);
+      
       if (response.status == 204) {
         toast({
           description: response.data.message,
@@ -37,6 +41,7 @@ const ConfirmBox = ({
           duration: 5000,
           isClosable: true,
         });
+        setIsActionCompleted(true);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -85,4 +90,4 @@ const ConfirmBox = ({
   );
 };
 
-export default ConfirmBox;
+export default ConfirmDelete;
