@@ -145,10 +145,10 @@ const StudentForm = ({
             <Input
               type="date"
               placeholder="Date of birth"
-              // value={student?.dob}
-              // onChange={(e) =>
-              //   setStudent({ ...selectedStudent, dob: e.target.value })
-              // }
+              value={student?.dob}
+              onChange={(e) =>
+                setStudent({ ...selectedStudent, dob: e.target.value })
+              }
             />
           </FormControl>
 

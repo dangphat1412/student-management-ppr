@@ -13,6 +13,6 @@ CREATE TABLE IF NOT EXISTS student (
 
 INSERT INTO student (studentcode,firstname,lastname,email,dob,country,score)   
 VALUES 
-    ("MSE1","Nguyen Thanh","Binh","binhnguyenthanh@gmail.com","01/01/1998","HaNoi",8.1),
-    ("MSE2","Ngo Viet","Hai","haingoviet@gmail.com","02/02/2000","HaNoi",8.2),
-    ("MSE3","Ha Hoang","Hieu","hieuhahoang@gmail.com","03/03/1998","HaNoi",8.5);
+    ("MSE1","Nguyen Thanh","Binh","binhnguyenthanh@gmail.com","1998-01-01","HaNoi",8.1),
+    ("MSE2","Ngo Viet","Hai","haingoviet@gmail.com","2000-02-02","HaNoi",8.2),
+    ("MSE3","Ha Hoang","Hieu","hieuhahoang@gmail.com","1998-03-03","HaNoi",8.5);
