@@ -1,13 +1,10 @@
 import sqlite3
 from config import config
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, jsonify, request, render_template
 from modify_table import select_all, delete_info, insert_info, modify_info
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
+
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
-# db = SQLAlchemy(app)
 
 def get_db_connection():
     try:
@@ -17,13 +14,30 @@ def get_db_connection():
     except sqlite3.Error as error:
         print('Error occurred - ', error)
 
-@app.route('/')
+@app.route('/home')
 def select_all_student():
     conn = get_db_connection()
     cursor = conn.cursor()
-    print(type(select_all(cursor, conn)))
-    return render_template('homepage.html',students=select_all(cursor, conn))
 
-# export PYTHONPATH="${PYTHONPATH}:/Users/lengoclong/Downloads/PPR501"
+    list_students = select_all(cursor, conn) # return type: list
+       
+    # empty list
+    list_all = []
+    for student in list_students:
+        # create new dict for each student and add to list
+        dict_student = {
+            "id": student['id'],
+            "studentcode": student['studentcode'],
+            "firstname": student['firstname'],
+            "lastname": student['lastname'],
+            "email": student['email'],
+            "dob": student['dob'],
+            "country": student['country'],
+            "score": student['score']
+        }
+        list_all.append(dict_student)
+    print(list_all)
+    return render_template('homepage.html', data=list_all)
+
 if __name__ == '__main__':  
-   app.run(debug=True)
+   app.run(debug=True, port=5001)

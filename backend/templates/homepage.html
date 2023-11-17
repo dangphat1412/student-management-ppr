@@ -6,11 +6,34 @@
     <title>Project - Home Page</title>
 </head>
 <body>
-    {% for student in students %}
-        <div>
-            <p>{{ student['firstname'] }}</p>
-            
-        </div>
-    {% endfor %}
+    <h1>Student List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Student Code</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Country</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in data %}
+                <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.studentcode }}</td>
+                    <td>{{ student.firstname }}</td>
+                    <td>{{ student.lastname }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.dob }}</td>
+                    <td>{{ student.country }}</td>
+                    <td>{{ student.score }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

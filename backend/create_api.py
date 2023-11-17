@@ -1,7 +1,7 @@
 import json
 import sqlite3
 from config import config, Student, APIException
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from modify_table import select_all, delete_info, insert_info, modify_info, select_student_by_id, check_student_code
 from flask_cors import CORS
 from input_validation import check_email, check_null, check_score

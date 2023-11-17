@@ -1,0 +1,36 @@
+Student ID: 1
+Student Code: MSE1
+First Name: Nguyen Thanh
+Last Name: Binh
+Email: binhnguyenthanh@gmail.com
+Date of Birth: 1998-01-01
+Country: HaNoi
+Score: 8.1
+
+Student ID: 2
+Student Code: MSE2
+First Name: Ngo Viet
+Last Name: Hai
+Email: haingoviet@gmail.com
+Date of Birth: 2000-02-02
+Country: HaNoi
+Score: 8.2
+
+Student ID: 3
+Student Code: MSE3
+First Name: Ha Hoang
+Last Name: Hieu
+Email: hieuhahoang@gmail.com
+Date of Birth: 1998-03-03
+Country: HaNoi
+Score: 8.5
+
+Student ID: 4
+Student Code: MSE5
+First Name: Le Ngoc
+Last Name: Long
+Email: longlengoc@gmail.com
+Date of Birth: 2023-11-11
+Country: Hanoi
+Score: 9.9
+
