@@ -36,7 +36,8 @@ const ConfirmDelete = ({
       
       if (response.status == 204) {
         toast({
-          description: response.data.message,
+          position: 'top',
+          description: "Delete successfully!",
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -46,7 +47,8 @@ const ConfirmDelete = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast({
-        description: error.message,
+        position: 'top',
+        description: error?.response?.data?.message,
         status: "error",
         duration: 5000,
         isClosable: true,

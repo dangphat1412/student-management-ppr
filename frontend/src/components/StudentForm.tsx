@@ -52,9 +52,11 @@ const StudentForm = ({
         action == "edit"
           ? await studentService.updateStudent(student)
           : await studentService.addStudent(student);
-      if (response.status == 200) {
+
+      if (response.status == 201) {
         toast({
-          description: response.data,
+          position: 'top',
+          description: response.data.message,
           status: "success",
           duration: 5000,
           isClosable: true,
@@ -64,7 +66,8 @@ const StudentForm = ({
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setError(error.message);
+      setError(error?.response?.data?.message)
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -147,7 +150,7 @@ const StudentForm = ({
               placeholder="Date of birth"
               value={student?.dob}
               onChange={(e) =>
-                setStudent({ ...selectedStudent, dob: e.target.value })
+                setStudent({ ...student, dob: e.target.value })
               }
             />
           </FormControl>
