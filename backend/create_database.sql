@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS student (
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     email VARCHAR(255),
-    dob DATE,
+    dob DATETIME,
     country VARCHAR(255),
     score FLOAT NOT NULL
 );

@@ -73,102 +73,149 @@ def get_student_by_id(id):
     except:
         raise APIException('Error when select student', 400)
         
-# can sua
-# {status, error}
-@app.route('/api/students/add', methods=['GET'])
+# done
+@app.route('/api/students/add', methods=['POST'])
 def add_student():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # get data from request form
-        new_student = Student
-        {
-            "Student Code": Student.set_studentcode(request.form["studentcode"],),
-            "First Name": Student.set_firstname(request.form["firstname"]),
-            "Last Name": Student.set_lastname(request.form["lastname"]),
-            "Email": Student.set_email(request.form["email"]),
-            "DOB": Student.set_dob(request.form["dob"]),
-            "Country": Student.set_country(request.form["country"]),
-            "Score": Student.set_score(request.form["score"])
-        }
+        # get data
+        data = request.get_json()
+        print(data)
+        print(data['student']['studentcode'])
+
+        # check student code is null or invalid or not exists
+        if (check_null(data['student']['studentcode']) == True) \
+            or (check_student_code(cursor, conn, data['student']['studentcode']) == True):
+            message = "Student Code is not valid or existed"
+            return jsonify({'message': message}), 400
         
-        insert_info(cursor, conn, 
-                    Student.studentcode(), 
-                    Student.firstname(),
-                    Student.lastname(),
-                    Student.email(),
-                    Student.dob(),
-                    Student.country(),
-                    Student.score()
-                    )
+        # check first name
+        elif check_null(data['student']['firstname']) is True:
+            message = "First name is not valid"
+            return jsonify({'message': message}), 400
         
-        return json.dumps("Insert sucessfully")
+        # check last name
+        elif check_null(data['student']['lastname']) is True:
+            message = "Last name is not valid"
+            return jsonify({'message': message}), 400
+
+        # check email
+        elif (check_null(data['student']['email']) is True) or (check_email(data['student']['email']) is False):
+            message = "Email is not valid"
+            return jsonify({'message': message}), 400
+
+        # check country
+        elif check_null(data['student']['country']) is True:
+            message = "Country is not valid"
+            return jsonify({'message': message}), 400
+
+        elif check_score(data['student']['score']) is False:
+            message = "Score is not valid"
+            return jsonify({'message': message}), 400
+
+        else:
+            # add new student
+            new_student = Student(
+                data['student']['studentcode'],
+                data['student']['firstname'],
+                data['student']['lastname'],
+                data['student']['email'],
+                data['student']['dob'],
+                data['student']['country'],
+                data['student']['score']
+            )
+        
+            # add to database
+            insert_info(cursor,
+                        conn,
+                        new_student.studentcode,
+                        new_student.firstname,
+                        new_student.lastname,
+                        new_student.email,
+                        new_student.dob,
+                        new_student.country,
+                        new_student.score)
+
+            message = "Created sucessfully"
+            
+            return jsonify({'message': message}), 201
 
     except sqlite3.Error as error:
         print('Error occurred - ', error)
         return json.dumps(error)    
 
-# can sua
-# {status, error}
+# error : not update to db
 @app.route('/api/students/update/<id>', methods=['PUT'])
 def update_student(id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        message = ""
         # get data
         data = request.get_json()
 
         # check student code is null or invalid or exists
-        if (check_null(data['studentcode']) is True) \
-            or (check_student_code(cursor, conn, data['studentcode']) == True):
+        if (check_null(data['student']['studentcode']) == True) \
+            or (check_student_code(cursor, conn, data['student']['studentcode']) == False):
             message = "Student Code is not valid"
+            return jsonify({'message': message}), 400
         
         # check first name
-        elif check_null(data['firstname']) is True:
+        elif check_null(data['student']['firstname']) is True:
             message = "First name is not valid"
-
+            return jsonify({'message': message}), 400
+        
         # check last name
-        elif check_null(data['lastname']) is True:
+        elif check_null(data['student']['lastname']) is True:
             message = "Last name is not valid"
+            return jsonify({'message': message}), 400
 
         # check email
-        elif (check_null(data['email']) is True) or (check_email(data['email']) is False):
+        elif (check_null(data['student']['email']) is True) or (check_email(data['student']['email']) is False):
             message = "Email is not valid"
+            return jsonify({'message': message}), 400
 
         # check country
-        elif check_null(data['country']) is True:
+        elif check_null(data['student']['country']) is True:
             message = "Country is not valid"
+            return jsonify({'message': message}), 400
 
+        elif check_score(data['student']['score']) is False:
+            message = "Score is not valid"
+            return jsonify({'message': message}), 400
 
-        # new_student = Student
-        # {
-        #     "Student Code": Student.set_studentcode(student_code),
-        #     "First Name": Student.set_firstname(request.form["firstname"]),
-        #     "Last Name": Student.set_lastname(request.form["lastname"]),
-        #     "Email": Student.set_email(request.form["email"]),
-        #     "DOB": Student.set_dob(request.form["dob"]),
-        #     "Country": Student.set_country(request.form["country"]),
-        #     "Score": Student.set_score(request.form["score"])
-        # }
-        
-        # modify_info(cursor, conn, 
-        #             Student.studentcode(), 
-        #             Student.firstname(),
-        #             Student.lastname(),
-        #             Student.email(),
-        #             Student.dob(),
-        #             Student.country(),
-        #             Student.score()
-        #             )
-        
-        return json.dumps("Update sucessfully")
+        else:
+            # add new student
+            
+            new_student = Student(
+                data['student']['studentcode'],
+                data['student']['firstname'],
+                data['student']['lastname'],
+                data['student']['email'],
+                data['student']['dob'],
+                data['student']['country'],
+                data['student']['score']
+            )
 
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-        return json.dumps(error)
+            # modify to database
+            modify_info(cursor, 
+                        conn,
+                        new_student.studentcode,
+                        new_student.firstname,
+                        new_student.lastname,
+                        new_student.email,
+                        new_student.dob,
+                        new_student.country,
+                        new_student.score)
+
+            message = "Updated sucessfully"
+            
+            return jsonify({'message': message}), 201
+
+    except:
+        raise APIException('Error when delete', 400)
 
 # done
 @app.route('/api/students/delete/<id>', methods=['DELETE'])
@@ -179,7 +226,8 @@ def delete_student(id):
 
         delete_info(cursor, conn, id)
         
-        return json.dumps("Delete sucessfully"), 204
+        message = "Deleted sucessfully"
+        return jsonify({'message': message}), 204
 
     except:
         raise APIException('Error when delete', 400)

@@ -1,4 +1,5 @@
 from typing import Any
+import os
 
 class config:
     # DATABASE
@@ -7,79 +8,79 @@ class config:
     LOG_PATH = 'app.log'
 
 class Student:
-    def __init__(self,id,studentcode,firstname,lastname,email,dob,country,score):
-        self.id = id
-        self.studentcode = studentcode
-        self.firstname = firstname
-        self.lastname = lastname
-        self.email = email
-        self.dob = dob
-        self.country = country
-        self.score = score
+    def __init__(self,student_code,first_name,last_name,student_email,student_dob,student_country,student_score):
+        #self._id = student_id
+        self._studentcode = student_code
+        self._firstname = first_name
+        self._lastname = last_name
+        self._email = student_email
+        self._dob = student_dob
+        self._country = student_country
+        self._score = student_score
 
-    @property
-    def id(self) -> str:
-        return self.id
+    # @property
+    # def id(self) -> str:
+    #     return self._id
 
-    @id.setter
-    def id(self, id):
-        self.id = id
+    # @id.setter
+    # def id(self, new_id):
+    #     self.id = new_id
 
     @property
     def studentcode(self) -> str:
-        return self.studentcode
+        return self._studentcode
     
     @studentcode.setter
-    def studentcode(self, student_code):
-        self.studentcode = student_code
+    def studentcode(self, new_student_code):
+        self._studentcode = new_student_code
     
     @property
     def firstname(self) -> str:
-        return self.firstname
+        return self._firstname
     
     @firstname.setter
-    def firstname(self, firstname):
-        self.firstname = firstname
+    def firstname(self, new_first_name):
+        self._firstname = new_first_name
 
     @property
     def lastname(self) -> str:
-        return self.lastname
+        return self._lastname
     
     @lastname.setter
-    def lastname(self, lastname):
-        self.lastname = lastname
+    def lastname(self, new_last_name):
+        self._lastname = new_last_name
     
     @property
     def email(self) -> str:
-        return self.email
+        return self._email
     
     @email.setter
-    def email(self, email):
-        self.email = email
+    def email(self, new_email):
+        self._email = new_email
 
     @property
     def dob(self) -> str:
-        return self.dob
+        return self._dob
     
     @dob.setter
-    def dob(self, dob):
-        self.dob = dob
+    def dob(self, new_dob):
+        self._dob = new_dob
     
     @property
     def country(self) -> str:
-        return self.country
+        return self._country
     
     @country.setter
-    def country(self, country):
-        self.country = country
+    def country(self, new_country):
+        self._country = new_country
     
     @property
     def score(self) -> str:
-        return self.score
+        return self._score
     
     @score.setter
-    def score(self, score):
-        self.score = score
+    def score(self, new_score):
+        self._score = new_score
 
 class ApiStatus(Student):
     def __init__(self, id, studentcode, firstname, lastname, email, dob, country, score, apistatuscode, apierror):
